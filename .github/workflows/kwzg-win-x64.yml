@@ -1,0 +1,96 @@
+name: Build Windows x64 (Unsigned)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  DSH_TELEMETRY_DISABLED: '1'
+
+jobs:
+  build-win-x64:
+    runs-on: windows-latest
+    timeout-minutes: 90
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+
+      - name: Enable Developer Mode (symlink support)
+        run: |
+          reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" /t REG_DWORD /f /v "AllowDevelopmentWithoutDevLicense" /d "1"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: |
+          $drive = (Split-Path -Qualifier $env:GITHUB_WORKSPACE).TrimEnd(':')
+          $fs = (Get-Volume -DriveLetter $drive).FileSystem
+          if ($fs -eq 'ReFS') {
+            pnpm install --frozen-lockfile --package-import-method=clone
+          } else {
+            pnpm install --frozen-lockfile
+          }
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Prepare unsigned Windows packaging config
+        run: |
+          @(
+            'DSH_DESKTOP_APP_ID=com.deepseek.harness'
+            'DSH_DESKTOP_AUTO_UPDATE_ENV=production'
+            'DSH_DESKTOP_MANDATORY_UPDATE_PROD_ORIGIN=https://kwzg.yizuw.cn'
+            'DSH_DESKTOP_WINDOWS_COMPRESSION_LEVEL=3'
+          ) | Set-Content -Path "apps/desktop/.env.windows" -Encoding utf8
+
+      - name: Check Windows packaging toolchain
+        run: |
+          pnpm run package:desktop:win:x64:unsigned -- --check
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Build Windows x64 unsigned installer
+        run: |
+          pnpm run package:desktop:win:x64:unsigned
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Summarize built Windows artifacts
+        run: |
+          $outDir = Join-Path $env:GITHUB_WORKSPACE "apps/desktop/.desktop-build/targets/win-x64/unsigned-artifacts"
+          Get-ChildItem -LiteralPath $outDir -File | ForEach-Object {
+            $hash = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+            Write-Host ("{0}  size={1} bytes  sha256={2}" -f $_.Name, $_.Length, $hash)
+          }
+
+      - name: Upload Windows x64 installer artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: kwzg-desktop-win-x64-unsigned
+          path: |
+            apps/desktop/.desktop-build/targets/win-x64/unsigned-artifacts/*.exe
+            apps/desktop/.desktop-build/targets/win-x64/unsigned-artifacts/*.blockmap
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload packaging diagnostics
+        continue-on-error: true
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kwzg-win-x64-packaging-logs
+          include-hidden-files: true
+          path: apps/desktop/.desktop-build/packaging-runs/
+          if-no-files-found: warn
+          retention-days: 14

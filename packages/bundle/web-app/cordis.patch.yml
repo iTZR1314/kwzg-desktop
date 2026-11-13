@@ -154,6 +154,12 @@
       name: '@deepseek-ai/dsh-mcp-manager'
       inject: [credentials]
 
+    # Built-in ParkWise Smart Park MCP connector (OAuth 2.0 + PKCE browser login,
+    # bundled parkwise-skill, and default MCP guidance).
+    - id: parkwise-connector
+      name: '@deepseek-ai/dsh-parkwise-connector'
+      inject: [credentials, mcpManager]
+
     # Workspace commands and reconnect-safe projection over Typert Remote.
     - id: workspace-controller
       name: '@deepseek-ai/dsh-api-workspace-controller'
@@ -483,6 +489,9 @@
 
     - id: ui-settings-web-search
       name: '@deepseek-ai/dsh-client-ui-settings-web-search'
+
+    - id: ui-settings-parkwise
+      name: '@deepseek-ai/dsh-client-ui-settings-parkwise'
 
     # Plan control: the composer plan seat over the plan projection + /plan channel.
     - id: ui-plan

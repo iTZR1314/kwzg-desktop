@@ -1,0 +1,34 @@
+# Bilingual-pair consistency record for README.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write packages/client/ui-settings-parkwise/README.md
+/:
+  en: c2e1a0ffa107d8eb
+  zh: 79e9e0a87c3c07a6
+/deepseek-ai-dsh-client-ui-settings-parkwise:
+  en: 4e7af75a283d87e0
+  zh: 4049f13d193b80ad
+/deepseek-ai-dsh-client-ui-settings-parkwise/summary:
+  en: 53718d4de0ec23d4
+  zh: 4a37efccadd7dd09
+/deepseek-ai-dsh-client-ui-settings-parkwise/table-of-contents:
+  en: b563e4ec4727d0de
+  zh: 2ec32088de5ed285
+/deepseek-ai-dsh-client-ui-settings-parkwise/use-this-package:
+  en: 1aa0292461b97484
+  zh: 06c023101fba261d
+/deepseek-ai-dsh-client-ui-settings-parkwise/understand-the-implementation:
+  en: c01ab693067132f7
+  zh: 63fd2dfc80f4d18d
+/deepseek-ai-dsh-client-ui-settings-parkwise/further-exploration:
+  en: 038e0dd7e8a0cba4
+  zh: 0199198333516e9f
+/deepseek-ai-dsh-client-ui-settings-parkwise/model-experience:
+  en: 4110f6de02c6730e
+  zh: 24ea8eba0d22a2df
+/deepseek-ai-dsh-client-ui-settings-parkwise/model-experience/kv-cache-effect:
+  en: 6250c7744b2590b1
+  zh: 4f8a6ec170ebbfb6
+/deepseek-ai-dsh-client-ui-settings-parkwise/known-limitations-and-deferred-work:
+  en: 9615b399889d4d27
+  zh: 6c5bb4ddc915dc6c

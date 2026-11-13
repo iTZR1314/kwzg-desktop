@@ -1,0 +1,46 @@
+# Bilingual-pair consistency record for README.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write packages/mcp/parkwise-connector/README.md
+/:
+  en: 4e7d5160a64080dd
+  zh: 2ef67de9bef25346
+/deepseek-ai-dsh-parkwise-connector:
+  en: 915438064e781570
+  zh: b78c5783a71905de
+/deepseek-ai-dsh-parkwise-connector/summary:
+  en: 94b36d2b4d8f5b52
+  zh: 60fff087b9e6564d
+/deepseek-ai-dsh-parkwise-connector/table-of-contents:
+  en: d152484eb41ac6b4
+  zh: 231dfc3743e273f4
+/deepseek-ai-dsh-parkwise-connector/use-this-package:
+  en: fd26d0b80745ad50
+  zh: 743d27a91a616b57
+/deepseek-ai-dsh-parkwise-connector/understand-the-implementation:
+  en: 40326cd9136fd643
+  zh: a50cf09b94e460cf
+/deepseek-ai-dsh-parkwise-connector/further-exploration:
+  en: a776356e575a8a79
+  zh: f8d22c34ae54c12b
+/deepseek-ai-dsh-parkwise-connector/model-experience:
+  en: 215e7ba838619b7b
+  zh: a311da3843709f90
+/deepseek-ai-dsh-parkwise-connector/model-experience/parkwise-guidance-skill-summary-and-connected-tools:
+  en: 4adcf4d323813f22
+  zh: f1bbc153ca4ad75c
+/deepseek-ai-dsh-parkwise-connector/model-experience/parkwise-guidance-skill-summary-and-connected-tools/what-the-model-sees:
+  en: d3904415054c6725
+  zh: 74764f4375ed2cd5
+/deepseek-ai-dsh-parkwise-connector/model-experience/parkwise-guidance-skill-summary-and-connected-tools/token-effect:
+  en: 85527a5e768fa5dd
+  zh: bcafd84a827d8242
+/deepseek-ai-dsh-parkwise-connector/model-experience/parkwise-guidance-skill-summary-and-connected-tools/kv-cache-effect:
+  en: 36fb781df1227191
+  zh: a692c02e7582199c
+/deepseek-ai-dsh-parkwise-connector/known-limitations-and-deferred-work:
+  en: 160a59e0c4773d7c
+  zh: 8702e1b27c339856
+/deepseek-ai-dsh-parkwise-connector/known-limitations-and-deferred-work/dev-note:
+  en: e67f633dc6fe7773
+  zh: 83780964e5de2f54

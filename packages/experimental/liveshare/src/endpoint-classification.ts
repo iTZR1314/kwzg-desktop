@@ -212,6 +212,12 @@ export const VIEWER_ENDPOINT_CLASSES = {
   'mcpManager/probe': 'owner-only', // owner MCP server management
   'mcpManager/restart': 'owner-only', // owner MCP server management
   'mcpManager/watch': 'owner-only', // owner MCP server management
+  'parkwise/cancelSignIn': 'owner-only', // owner ParkWise OAuth sign-in
+  'parkwise/getState': 'owner-only', // owner ParkWise OAuth & MCP status
+  'parkwise/reconnect': 'owner-only', // owner ParkWise MCP reconnect
+  'parkwise/signOut': 'owner-only', // owner ParkWise OAuth sign-out
+  'parkwise/startSignIn': 'owner-only', // owner ParkWise OAuth sign-in
+  'parkwise/watch': 'owner-only', // owner ParkWise OAuth & MCP stream
   'commands/execute': 'owner-only', // owner executes a slash command
   'permissionPresets/catalog': 'owner-only', // owner permission presets
   'userQuestions/answer': 'owner-only', // owner answers a pending question

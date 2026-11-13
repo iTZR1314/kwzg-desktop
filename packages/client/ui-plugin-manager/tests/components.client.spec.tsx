@@ -1578,6 +1578,26 @@ describe('PluginManagerPage', () => {
       fireEvent.click(screen.getByRole('button', { name: en.openDetail.replace('{name}', 'dsh-better-sidebar') }))
       expect(subjects.at(-1)).toEqual({ kind: 'bundle', pkg: { name: 'dsh-better-sidebar', installed: true, official: false, availability: 'profile', enabled: true, rows: [] } })
     })
+
+    it('renders ParkWise seal artwork full-bleed inside the 48px icon container on card and detail views', () => {
+      renderTab(
+        { packages: [] },
+        { items: [{ id: 'parkwise', label: 'ParkWise (瞰维智管)' }] },
+        { 'plugins.item:parkwise': view => view === 'summary' ? 'Connect ParkWise.' : <div data-testid="parkwise-page" /> },
+      )
+      const card = document.querySelector('[data-plugin-item="parkwise"]') as HTMLElement
+      const cardSvg = card.querySelector('svg')
+      expect(cardSvg?.getAttribute('width')).toBe('48')
+      expect(cardSvg?.getAttribute('height')).toBe('48')
+      expect(cardSvg?.parentElement?.className).toContain('cardIconBleed')
+
+      fireEvent.click(screen.getByRole('button', { name: en.openDetail.replace('{name}', 'ParkWise (瞰维智管)') }))
+      const detail = document.querySelector('[data-plugin-item-detail="parkwise"]') as HTMLElement
+      const detailIcon = [...detail.querySelectorAll('span')].find(el => el.className.includes('cardIconBleed'))
+      const detailSvg = detailIcon?.querySelector('svg')
+      expect(detailSvg?.getAttribute('width')).toBe('48')
+      expect(detailIcon?.className).toContain('cardIconBleed')
+    })
   })
 
   it('preserves the full package name and description for a third-party scope', () => {

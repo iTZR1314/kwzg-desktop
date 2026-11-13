@@ -16,7 +16,7 @@ import {
   IconChevronRightOutlineRegular, IconCloseOutlineMedium,
   IconDownloadOutlineRegular, IconInfoOutlineRegular, IconPlusOutlineRegular, IconRefreshOutlineRegular, IconTrashOutlineRegular,
   IconWarningOutlineRegular, Input, Menu, MenuItemButton, Modal, pointerModality,
-  PluginArtworkDefault, PluginArtworkLoop, PluginArtworkSearch, PluginArtworkSubagent, PluginArtworkTerminal,
+  PluginArtworkDefault, PluginArtworkLoop, PluginArtworkParkwise, PluginArtworkSearch, PluginArtworkSubagent, PluginArtworkTerminal,
   SegmentedTabs, StateDot, Switch, Tag, TerminalBlock, Toast, Tooltip, useDismissOnOutsidePointer,
   type IconProps, type StateDotState, type TerminalBlockLabels,
 } from '@deepseek-ai/dsh-client-ui-primitives'
@@ -196,6 +196,12 @@ const ROW_FILTER_THRESHOLD = 10
 /** The size the 36-viewBox plugin artwork renders at inside a card's 48px frame. */
 const CARD_ARTWORK_SIZE = 36
 
+/** Full-bleed brand artwork fills the 48px card frame without an inner margin. */
+const FULL_BLEED_ARTWORK_SIZE = 48
+
+/** Official plugin ids whose artwork already carries its own solid tile background. */
+const FULL_BLEED_ARTWORK = new Set(['parkwise'])
+
 /** The size the artwork renders at inside a row's 40px frame. */
 const ROW_ARTWORK_SIZE = 30
 
@@ -205,12 +211,18 @@ const ITEM_ARTWORK = new Map<string, (props: IconProps) => ReactNode>([
   ['agent-loop', PluginArtworkLoop],
   ['subagent', PluginArtworkSubagent],
   ['web-search', PluginArtworkSearch],
+  ['parkwise', PluginArtworkParkwise],
 ])
 
 /** An official plugin's card and page artwork; plugins without their own get the default. */
 function itemArtwork(id: string): ReactNode {
   const Artwork = ITEM_ARTWORK.get(id) ?? PluginArtworkDefault
-  return <Artwork size={CARD_ARTWORK_SIZE} />
+  return <Artwork size={FULL_BLEED_ARTWORK.has(id) ? FULL_BLEED_ARTWORK_SIZE : CARD_ARTWORK_SIZE} />
+}
+
+/** Card & detail icon wrapper class; full-bleed tiles omit the double border. */
+function artworkBoxClass(id: string): string | undefined {
+  return FULL_BLEED_ARTWORK.has(id) ? `${css.cardIcon} ${css.cardIconBleed}` : css.cardIcon
 }
 
 /** Manifest images remain isolated from the page DOM; a failed decode keeps the position's default artwork. */
@@ -444,11 +456,12 @@ function StatusTag({ status, t }: { readonly status: PackageStatus; readonly t: 
 }
 
 /** The head every card shares: the artwork, the name that opens the page beside its tags, its one-liner, and what sits at the end. */
-function CardHead({ title, t, onOpen, icon, tags, description, end }: {
+function CardHead({ title, t, onOpen, icon, iconClassName, tags, description, end }: {
   readonly title: string
   readonly t: Translate
   readonly onOpen: () => void
   readonly icon: ReactNode
+  readonly iconClassName?: string | undefined
   readonly tags?: ReactNode
   readonly description: ReactNode
   readonly end?: ReactNode
@@ -456,7 +469,7 @@ function CardHead({ title, t, onOpen, icon, tags, description, end }: {
   const descriptionId = useId()
   return (
     <div className={css.cardHead}>
-      <span className={css.cardIcon} aria-hidden="true">{icon}</span>
+      <span className={iconClassName ?? css.cardIcon} aria-hidden="true">{icon}</span>
       <div className={css.cardMain}>
         <div className={css.titleRow}>
           <button type="button" className={`${css.cardTitle} ${css.cardOpen}`} aria-label={t('openDetail', { name: title })} aria-describedby={description === undefined ? undefined : descriptionId} onClick={onOpen}>{title}</button>
@@ -503,11 +516,12 @@ function ListSkeleton({ label }: { readonly label: string }): ReactNode {
 }
 
 /** The top every page shares: the crumb that leads back, then the icon with the page's actions at its right. */
-function DetailTop({ crumbLabel, crumbText, onBack, icon, actions }: {
+function DetailTop({ crumbLabel, crumbText, onBack, icon, iconClassName, actions }: {
   readonly crumbLabel: string
   readonly crumbText: string
   readonly onBack: () => void
   readonly icon: ReactNode
+  readonly iconClassName?: string | undefined
   readonly actions?: ReactNode
 }): ReactNode {
   return (
@@ -517,7 +531,7 @@ function DetailTop({ crumbLabel, crumbText, onBack, icon, actions }: {
         <span>{crumbText}</span>
       </button>
       <div className={css.detailHead}>
-        <span className={css.cardIcon} aria-hidden="true">{icon}</span>
+        <span className={iconClassName ?? css.cardIcon} aria-hidden="true">{icon}</span>
         {actions}
       </div>
     </div>
@@ -608,7 +622,7 @@ function ItemCard({ item, t, onOpen, renderSlot }: {
 }): ReactNode {
   return (
     <li className={`${css.card} ${css.cardLink}`} data-plugin-item={item.id}>
-      <CardHead title={item.label} t={t} onOpen={onOpen} icon={itemArtwork(item.id)} description={renderSlot('plugins.item', { view: 'summary' }, { only: item.id })} />
+      <CardHead title={item.label} t={t} onOpen={onOpen} icon={itemArtwork(item.id)} iconClassName={artworkBoxClass(item.id)} description={renderSlot('plugins.item', { view: 'summary' }, { only: item.id })} />
     </li>
   )
 }
@@ -651,6 +665,7 @@ function ItemDetail({ item, t, onBack, renderSlot, form }: {
         crumbText={t('crumbRoot')}
         onBack={onBack}
         icon={itemArtwork(item.id)}
+        iconClassName={artworkBoxClass(item.id)}
         actions={<div className={css.detailActions}>{renderSlot('plugins.detail.actions', { subject })}</div>}
       />
       <div className={css.detailMain}>

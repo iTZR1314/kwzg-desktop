@@ -725,6 +725,7 @@ it.each(['desktopOnboardingVisible', 'onboarding'] as const)('hides the notifica
   let openAccount: (() => void) | undefined
   const openSettings = vi.fn()
   const renderSlot: AccountMenuProps['renderSlot'] = (name, owner) => {
+    if (name === 'settings.launcher.sublabel') return null
     expect(name).toBe('settings.launcher.notifications')
     const value: object = owner
     const props = value as AccountNotificationsOwnerProps
@@ -744,7 +745,9 @@ it.each(['desktopOnboardingVisible', 'onboarding'] as const)('hides the notifica
 it('keeps notification DOM inside the launcher while the collapsed rail hides it', async () => {
   const operations = operationsOf({ status: 'credential-stored', attempt: null })
   const snapshot = () => operations.hooks.account.getSnapshot()
-  const renderSlot: AccountMenuProps['renderSlot'] = () => <div role="status">Notification</div>
+  const renderSlot: AccountMenuProps['renderSlot'] = name => (
+    name === 'settings.launcher.notifications' ? <div role="status">Notification</div> : null
+  )
   const view = render(await accountMenu(operations, snapshot, false, renderSlot))
   const notice = screen.getByRole('status')
   expect(view.container.contains(notice)).toBe(true)
@@ -753,4 +756,18 @@ it('keeps notification DOM inside the launcher while the collapsed rail hides it
   expect(notice.isConnected).toBe(true)
   view.rerender(await accountMenu(operations, snapshot, false, renderSlot))
   expect(screen.getByRole('status')).toBe(notice)
+})
+
+it('renders the launcher sublabel beneath the display name when wide and hides it when collapsed', async () => {
+  const operations = operationsOf({ status: 'credential-stored', attempt: null })
+  const snapshot = () => operations.hooks.account.getSnapshot()
+  const renderSlot: AccountMenuProps['renderSlot'] = (name, owner) => (
+    name === 'settings.launcher.sublabel' && 'wide' in owner && owner.wide
+      ? <span>招商总监 · 彭永杰</span>
+      : null
+  )
+  const view = render(await accountMenu(operations, snapshot, false, renderSlot))
+  expect(screen.getByText('招商总监 · 彭永杰')).toBeTruthy()
+  view.rerender(await accountMenu(operations, snapshot, false, renderSlot, undefined, false))
+  expect(screen.queryByText('招商总监 · 彭永杰')).toBeNull()
 })

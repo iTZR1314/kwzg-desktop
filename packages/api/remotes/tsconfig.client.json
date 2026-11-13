@@ -107,6 +107,9 @@
       "path": "../../mcp/mcp-manager"
     },
     {
+      "path": "../../mcp/parkwise-connector"
+    },
+    {
       "path": "../../boot/plugin-market"
     },
     {

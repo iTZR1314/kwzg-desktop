@@ -358,8 +358,14 @@ export function SidebarRoot({
               </span>
             </span>
           )
+          const brandContent = (
+            <>
+              {renderSlot('sidebar.brand.eyebrow', {}, { fallback: null })}
+              {identity}
+            </>
+          )
           return darwinDesktop || !canStartSession
-            ? <span className={clsx(css.brand, css.wide)}>{identity}</span>
+            ? <span className={clsx(css.brand, css.wide)}>{brandContent}</span>
             : (
               <button
                 type="button"
@@ -371,7 +377,7 @@ export function SidebarRoot({
                   openNewSession()
                 }}
               >
-                {identity}
+                {brandContent}
               </button>
             )
         })()}

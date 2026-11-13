@@ -1,11 +1,14 @@
 import type { AfterPackContext, BeforePackContext } from 'app-builder-lib'
 
+/** Branded macOS/Windows desktop application display name and `.app` bundle title. */
+export declare const DESKTOP_PRODUCT_NAME: string
+
 /** Electron-builder fields asserted by the Desktop release tests. */
 export interface DesktopElectronBuilderConfig {
   readonly appId: string
   readonly copyright: string
   readonly artifactName: string
-  readonly protocols: readonly [{ readonly name: 'DeepSeek Harness'; readonly schemes: readonly ['dsh'] }]
+  readonly protocols: readonly [{ readonly name: string; readonly schemes: readonly ['dsh'] }]
   readonly directories: {
     readonly output: string
   }

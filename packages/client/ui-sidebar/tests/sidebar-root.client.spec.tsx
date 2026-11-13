@@ -87,6 +87,7 @@ function mountShell({ collapsed = false, width = 300, drawer = false, shortcuts 
       ) => {
         if (key === 'sidebar.brand.mark') return brandMark
         if (key === 'sidebar.brand.name') return brandName
+        if (key === 'sidebar.brand.eyebrow') return null
         if (key === 'sidebar.toggle.badge') return null
         if (key === 'sidebar.panellist') return <span aria-hidden="true">P</span>
         if (key === 'sidebar.settings') {

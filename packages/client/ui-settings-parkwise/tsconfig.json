@@ -1,0 +1,25 @@
+{
+  "extends": "../../../tsconfig.base.client.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "lib/types"
+  },
+  "include": [
+    "src"
+  ],
+  "references": [
+    { "path": "../../../vendor/cordis" },
+    { "path": "../../api/remote-access/tsconfig.client.json" },
+    { "path": "../../api/remotes/tsconfig.client.json" },
+    { "path": "../locale/tsconfig.client.json" },
+    { "path": "../../test-support/client-runtime" },
+    { "path": "../ui-plugin-manager/tsconfig.client.json" },
+    { "path": "../ui-primitives" },
+    { "path": "../ui-renderer" },
+    { "path": "../ui-settings/tsconfig.client.json" },
+    { "path": "../ui-settings-account" },
+    { "path": "../ui-sidebar" },
+    { "path": "../ui-slots" },
+    { "path": "../../mcp/parkwise-connector" }
+  ]
+}

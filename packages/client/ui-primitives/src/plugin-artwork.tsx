@@ -108,3 +108,24 @@ export const PluginArtworkDefault = ({ size = 36, className }: IconProps) => {
     </svg>
   )
 }
+
+/** ParkWise red-seal plugin artwork matching the gateway favicon. */
+export const PluginArtworkParkwise = ({ size = 36, className }: IconProps) => (
+  <svg width={size} height={size} className={className} viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g transform="scale(0.0703125)">
+      <rect x="0" y="0" width="512" height="512" rx="72" fill="#9c3a2b" />
+      <g
+        transform="translate(256 256) scale(1.06) translate(-256 -270)"
+        fill="none"
+        stroke="#f2ece0"
+        strokeWidth="30"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M148 140H364" />
+        <path d="M176 200H336" />
+        <path d="M196 258c-18 106 44 176 120 138 46-23 44-82 2-100-30-13-58 6-54 36 3 21 24 29 38 16" />
+      </g>
+    </g>
+  </svg>
+)

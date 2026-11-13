@@ -408,6 +408,13 @@
   color: var(--dsw-alias-label-secondary);
 }
 
+.cardIconBleed {
+  padding: 0;
+  border: none;
+  overflow: hidden;
+  background: #9c3a2b;
+}
+
 /* A card's reason lines start under its title. */
 .card > .reason {
   padding: 0 var(--card-head-inset) var(--card-head-inset) calc(var(--card-head-inset) + var(--card-icon-size) + var(--card-head-gap));

@@ -28,6 +28,12 @@ export interface AccountNotificationsOwnerProps {
   openAccount: () => void
 }
 
+/** Account-menu presentation facts supplied to an optional secondary line beneath the display name. */
+export interface AccountLauncherSublabelOwnerProps {
+  /** Whether the navigation sidebar is expanded enough to display text beside the avatar. */
+  wide: boolean
+}
+
 declare module '@deepseek-ai/cordis' {
   interface Context { accountUi: AccountUi }
   interface Events {
@@ -45,5 +51,7 @@ declare module '@deepseek-ai/dsh-client-ui-slots' {
   interface SlotMap {
     /** Notifications anchored at the account menu; the contribution owns its markup and lifecycle. */
     'settings.launcher.notifications': { kind: 'single'; scope: 'root'; owner: AccountNotificationsOwnerProps }
+    /** Optional secondary identity subtitle rendered below the launcher display name when expanded. */
+    'settings.launcher.sublabel': { kind: 'single'; scope: 'root'; owner: AccountLauncherSublabelOwnerProps }
   }
 }

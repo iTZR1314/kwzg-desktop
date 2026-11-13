@@ -116,6 +116,10 @@ exports[`sidebar shell snapshots > renders Windows caption controls in expanded 
         class="brand wide"
         type="button"
       >
+        <div
+          data-slot="sidebar.brand.eyebrow"
+          style="display: contents;"
+        />
         <span
           aria-hidden="true"
           class="brandIdentity"
@@ -389,6 +393,10 @@ exports[`sidebar shell snapshots > renders the expanded column (wordmark, capsul
         class="brand wide"
         type="button"
       >
+        <div
+          data-slot="sidebar.brand.eyebrow"
+          style="display: contents;"
+        />
         <span
           aria-hidden="true"
           class="brandIdentity"
@@ -546,6 +554,10 @@ exports[`sidebar shell snapshots > renders the expanded column in the default lo
         class="brand wide"
         type="button"
       >
+        <div
+          data-slot="sidebar.brand.eyebrow"
+          style="display: contents;"
+        />
         <span
           aria-hidden="true"
           class="brandIdentity"

@@ -54,6 +54,19 @@ export const remoteDefaultResponses: RemoteTable = {
     'session/control': openStream([{ type: 'baseline', value: { projections: {} } }]),
     // ui-settings-account shares the account snapshot across settings and the sidebar menu.
     'account/watch': openStream([{ type: 'snapshot', state: { status: 'signed-out', attempt: null, links: { usageUrl: 'https://platform.deepseek.com/usage', topUpUrl: 'https://platform.deepseek.com/top_up' } } }]),
+    // ui-settings-parkwise shares the ParkWise OAuth & MCP snapshot across settings, sidebar, and account menu.
+    'parkwise/watch': openStream([{
+      type: 'snapshot',
+      state: {
+        authStatus: 'signed-out',
+        serverName: 'parkwise',
+        mcpUrl: 'https://pw.furong.org/gw/mcp',
+        oauthOrigin: 'https://pw.furong.org',
+        mcpState: 'waiting-credentials',
+        toolCount: 0,
+        attempt: null,
+      },
+    }]),
     // api-workspace-controller client `apply`: the follow stream's opening baseline, then open.
     'workspace/follow': openStream([{ type: 'baseline', value: { items: [], archivedSessionIds: [], pinnedSessionIds: [] } }]),
     // api-remote-access client `mountAccess`: the owner's access snapshot, then open.

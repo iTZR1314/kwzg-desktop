@@ -1,0 +1,169 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 6px 0;
+  font-size: 13px;
+  line-height: 21px;
+  color: var(--dsw-alias-label-primary);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 0.5px solid var(--dsw-alias-settings-card-stroke);
+  border-radius: var(--dsw-radius-xl);
+  background: var(--dsw-alias-settings-card-fill);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.headerCopy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--dsw-alias-label-primary);
+}
+
+.hint {
+  margin: 0;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--dsw-alias-label-tertiary);
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  font-size: 12px;
+  color: var(--dsw-alias-label-primary);
+}
+
+.metaList {
+  display: flex;
+  flex-direction: column;
+  border-top: 0.5px solid var(--dsw-alias-border-l2);
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 36px;
+  padding: 6px 0;
+  border-bottom: 0.5px solid var(--dsw-alias-border-l2);
+}
+
+.metaRow:last-child {
+  border-bottom: none;
+}
+
+.metaLabel {
+  color: var(--dsw-alias-label-tertiary);
+  flex: none;
+}
+
+.metaValue {
+  color: var(--dsw-alias-label-primary);
+  text-align: right;
+  word-break: break-all;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.linkButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border: 0.5px solid var(--dsw-alias-border-l3);
+  border-radius: var(--dsw-radius-md);
+  color: var(--dsw-alias-label-primary);
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.errorText {
+  margin: 0;
+  font-size: 12px;
+  color: var(--dsw-alias-status-danger-text, #dc2626);
+}
+
+.coBrand {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+  height: 24px;
+}
+
+.coBrandDivider {
+  flex: none;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--dsw-alias-label-tertiary);
+}
+
+.coBrandLogo {
+  flex: none;
+  display: block;
+}
+
+.coBrandTitle {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--dsw-alias-label-primary);
+  white-space: nowrap;
+}
+
+.coBrandEyebrow {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 13px;
+  letter-spacing: 0;
+  color: var(--dsw-alias-label-secondary);
+}
+
+.launcherSublabel {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  line-height: 14px;
+  color: var(--dsw-alias-label-secondary);
+}

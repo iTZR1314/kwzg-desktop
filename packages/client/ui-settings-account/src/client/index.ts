@@ -35,7 +35,7 @@ export type { AccountSectionInjected, AccountSectionProps } from './AccountSecti
 export type { AccountMenuProps } from './AccountMenu.tsx'
 export type { AccountSnapshot } from './AccountSection.tsx'
 export type { AccountKey } from './locales.ts'
-export type { AccountUi, AccountUiState, AccountNotificationsOwnerProps } from './account-ui.ts'
+export type { AccountUi, AccountUiState, AccountNotificationsOwnerProps, AccountLauncherSublabelOwnerProps } from './account-ui.ts'
 
 declare module '@deepseek-ai/dsh-client-ui-slots' {
   interface LocaleNamespaceMap { 'settings.account': AccountKey }
@@ -313,7 +313,10 @@ export function apply(ctx: Context): void {
   }
   ctx.remoteAccess.whenAccess('account/watch', () => ctx.slots.inject('settings.launcher', () => ctx.slots.register({
     name: 'settings.launcher', locale: 'settings.account', inject: () => operations,
-    children: { 'settings.launcher.notifications': { kind: 'single', scope: 'root' } },
+    children: {
+      'settings.launcher.notifications': { kind: 'single', scope: 'root' },
+      'settings.launcher.sublabel': { kind: 'single', scope: 'root' },
+    },
   }, AccountMenu)))
   ctx.remoteAccess.whenAccess('account/watch', () => ctx.slots.inject('settings.section', () => {
     let unregister: (() => void) | undefined
