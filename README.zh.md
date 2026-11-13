@@ -89,6 +89,15 @@ pnpm dsh web
 }
 ```
 
+## 代码签名声明
+
+本项目的免费代码签名服务由 [SignPath.io](https://signpath.io/) 提供，代码签名证书由 [SignPath Foundation](https://signpath.org/) 颁发。
+
+- **签名范围**：由 [`iTZR1314/kwzg-desktop`](https://github.com/iTZR1314/kwzg-desktop) 仓库构建产出的 Windows 桌面客户端可执行文件及 NSIS 安装包。
+- **构建溯源**：提交签名的所有二进制产物均严格基于本公开仓库源码，通过 GitHub Actions 官方托管 Runner（`.github/workflows/kwzg-win-x64.yml`）自动构建。
+- **团队角色**：仓库维护、代码审核与签名发布审批责任人：[`@iTZR1314`](https://github.com/iTZR1314)。
+- **隐私政策**：除用户或系统操作者主动发起的请求外（例如用户自主登录授权或连接所配置的园区管理网关与模型服务），本程序不会向任何其他网络系统传输用户信息或设备数据。
+
 ## 许可证
 
 [MIT](LICENSE)

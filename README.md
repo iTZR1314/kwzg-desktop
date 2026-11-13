@@ -70,6 +70,15 @@ For agents, follow [AGENTS.md](AGENTS.md).
 }
 ```
 
+## Code Signing Policy
+
+Free code signing provided by [SignPath.io](https://signpath.io/), certificate by [SignPath Foundation](https://signpath.org/).
+
+- **Scope**: Windows desktop application executables and NSIS installer packages built from [`iTZR1314/kwzg-desktop`](https://github.com/iTZR1314/kwzg-desktop).
+- **Provenance**: Signed artifacts are built strictly from public commits in this repository on standard GitHub-hosted runners via GitHub Actions (`.github/workflows/kwzg-win-x64.yml`).
+- **Team Roles**: Repository maintainer, reviewer, and release approver: [`@iTZR1314`](https://github.com/iTZR1314).
+- **Privacy Policy**: This software will not transfer any information to other networked systems unless specifically requested by the user or the person installing or operating it (such as user-initiated login or AI/MCP gateway connections).
+
 ## License
 
 [MIT](LICENSE)
