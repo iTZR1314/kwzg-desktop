@@ -2,6 +2,11 @@ name: Build Windows x64 (Unsigned)
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - kwzg-desktop
+    paths:
+      - '.github/workflows/kwzg-win-x64.yml'
 
 permissions:
   contents: read
