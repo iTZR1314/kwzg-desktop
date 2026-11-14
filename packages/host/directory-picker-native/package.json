@@ -46,6 +46,6 @@
   },
   "devDependencies": {
     "@deepseek-ai/cordis": "workspace:~",
-    "tsx": "^4.23.13"
+    "tsx": "^4.23.15"
   }
 }
