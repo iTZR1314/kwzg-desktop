@@ -50,13 +50,14 @@ function makeHeaderProps(): HeaderLeadingControlsProps {
   }
 }
 
-function mountShell({ collapsed = false, width = 300, drawer = false, shortcuts = [], panels = [], content }: {
+function mountShell({ collapsed = false, width = 300, drawer = false, shortcuts = [], panels = [], content, eyebrow = null }: {
   collapsed?: boolean
   width?: number
   drawer?: boolean
   shortcuts?: readonly ShortcutCatalogEntry[]
   panels?: readonly SidebarPanelMetadata[]
   content?: ReactNode
+  eyebrow?: ReactNode
 } = {}) {
   const startSession = vi.fn()
   const toggleSidebar = vi.fn()
@@ -87,7 +88,7 @@ function mountShell({ collapsed = false, width = 300, drawer = false, shortcuts 
       ) => {
         if (key === 'sidebar.brand.mark') return brandMark
         if (key === 'sidebar.brand.name') return brandName
-        if (key === 'sidebar.brand.eyebrow') return null
+        if (key === 'sidebar.brand.eyebrow') return eyebrow
         if (key === 'sidebar.toggle.badge') return null
         if (key === 'sidebar.panellist') return <span aria-hidden="true">P</span>
         if (key === 'sidebar.settings') {
@@ -106,6 +107,7 @@ function mountShell({ collapsed = false, width = 300, drawer = false, shortcuts 
   )
   const view = render(root())
   return {
+    container: view.container,
     startSession,
     toggleSidebar,
     trackEntryClick,
@@ -742,4 +744,20 @@ it.each([false, true])('moves hidden sidebar focus only to an available opener (
   const expected = hasOpener ? screen.getByRole('button', { name: 'Open navigation' }) : previous
   expect(document.activeElement).toBe(expected)
   if (hasOpener) expect(expected.hasAttribute('data-dsh-automatic-focus')).toBe(true)
+})
+
+it('renders the brand eyebrow in the macOS top strip between traffic lights and toggle instead of above the brand name', async () => {
+  document.documentElement.dataset.platform = 'darwin'
+  const shell = mountShell({ eyebrow: <span data-testid="eyebrow-company">十一兄弟</span> })
+  const topStrip = shell.container.querySelector('[class*="topStrip"]')!
+  const logoRow = shell.container.querySelector('[class*="logoRow"]')!
+  const company = screen.getByTestId('eyebrow-company')
+  expect(topStrip.contains(company)).toBe(true)
+  expect(logoRow.contains(company)).toBe(false)
+  expect(company.closest('button')).toBeNull()
+
+  shell.rerender({ collapsed: true, width: 0 })
+  await waitFor(() => {
+    expect(screen.queryByTestId('eyebrow-company')).toBeNull()
+  })
 })

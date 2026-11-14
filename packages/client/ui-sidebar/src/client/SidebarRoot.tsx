@@ -326,7 +326,16 @@ export function SidebarRoot({
     >
       {/* macOS hiddenInset titlebar: the strip shares the row with the
           traffic lights and keeps the toggle at the sidebar's top-right. */}
-      {darwinDesktop && <div className={css.topStrip} data-window-drag>{toggle}</div>}
+      {darwinDesktop && (
+        <div className={css.topStrip} data-window-drag>
+          {wide && (
+            <span className={css.topStripCompany}>
+              {renderSlot('sidebar.brand.eyebrow', {}, { fallback: null })}
+            </span>
+          )}
+          {toggle}
+        </div>
+      )}
       <div className={css.logoRow} data-window-drag>
         {/* Expanded, the brand doubles as a New Session shortcut while the
             access snapshot allows `session/create` — except on
@@ -360,7 +369,7 @@ export function SidebarRoot({
           )
           const brandContent = (
             <>
-              {renderSlot('sidebar.brand.eyebrow', {}, { fallback: null })}
+              {!darwinDesktop && renderSlot('sidebar.brand.eyebrow', {}, { fallback: null })}
               {identity}
             </>
           )

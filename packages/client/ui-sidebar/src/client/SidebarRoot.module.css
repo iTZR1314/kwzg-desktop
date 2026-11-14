@@ -189,6 +189,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  gap: 8px;
   height: 52px;
   box-sizing: border-box;
   margin: -6px calc(-1 * var(--dsh-sidebar-inline-padding)) 0;
@@ -196,6 +197,15 @@
      seat (ui-layout .leadingSeat, top 11) and the conversation title row, so
      collapse/expand never shifts it vertically. */
   padding: 0 12px 2px;
+}
+
+.topStripCompany {
+  flex: 1;
+  min-width: 0;
+  padding-left: 82px;
+  pointer-events: none;
+  user-select: none;
+  cursor: default;
 }
 
 :global(html[data-platform='darwin']:not([data-fullscreen])) .root:not(.collapsed) > .topStrip > .toggle {
@@ -206,6 +216,11 @@
    preload): the toggle takes their spot at the strip's left edge. */
 :global([data-fullscreen]) .topStrip {
   justify-content: flex-start;
+}
+
+:global([data-fullscreen]) .topStripCompany {
+  order: 2;
+  padding-left: 0;
 }
 
 /* The strip's full 52px foot leaves the wordmark too low; the content column
