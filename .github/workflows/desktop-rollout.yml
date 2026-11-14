@@ -152,7 +152,7 @@ jobs:
       - name: Retain publication audit
         continue-on-error: true
         if: always() && steps.publish.outputs.record != ''
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@v7
         with:
           name: desktop-publication-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ steps.publish.outputs.record }}/
@@ -200,7 +200,7 @@ jobs:
       - name: Archive website feed verification
         if: always() && steps.website.outputs.rollout-record != ''
         continue-on-error: true
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@v7
         with:
           name: website-feed-verification-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ steps.website.outputs.rollout-record }}/
@@ -209,7 +209,7 @@ jobs:
       - name: Archive website publication diagnostics
         if: always() && steps.website.outputs.record != ''
         continue-on-error: true
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@v7
         with:
           name: website-upload-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ steps.website.outputs.record }}/
@@ -255,7 +255,7 @@ jobs:
       - name: Archive website publication diagnostics
         if: always() && steps.website.outputs.record != ''
         continue-on-error: true
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@v7
         with:
           name: website-purge-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ steps.website.outputs.record }}/
