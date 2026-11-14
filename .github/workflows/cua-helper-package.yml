@@ -92,7 +92,7 @@ jobs:
         run: |
           mkdir -p dist
           node --import tsx/esm scripts/cua-helper/package.ts --out dist/cua-helper
-      - uses: actions/upload-artifact@v7.0.1
+      - uses: actions/upload-artifact@v7
         if: steps.retained.outputs.artifact-id == ''
         id: upload
         with:

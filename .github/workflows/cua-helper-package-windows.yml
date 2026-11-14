@@ -97,7 +97,7 @@ jobs:
               if (-not $zip.GetEntry($name)) { throw "Missing root entry in helper ZIP: $name" }
             }
           } finally { $zip.Dispose() }
-      - uses: actions/upload-artifact@v7.0.1
+      - uses: actions/upload-artifact@v7
         id: upload
         with:
           name: cua-helper-${{ github.run_id }}-${{ github.run_attempt }}-${{ steps.metadata.outputs.build-key }}

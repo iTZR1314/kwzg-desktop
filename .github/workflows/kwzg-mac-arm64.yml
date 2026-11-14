@@ -113,7 +113,7 @@ jobs:
           done
 
       - name: Upload macOS Arm64 installer artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: kwzg-desktop-mac-arm64-unsigned
           path: |
@@ -128,7 +128,7 @@ jobs:
       - name: Upload packaging diagnostics
         continue-on-error: true
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: kwzg-mac-arm64-packaging-logs
           include-hidden-files: true
