@@ -45,7 +45,9 @@
     "upload:latest:mac:arm64": "tsx scripts/upload-target.ts mac-arm64 --latest",
     "upload:latest:mac:x64": "tsx scripts/upload-target.ts mac-x64 --latest",
     "upload:latest:win:x64": "tsx scripts/upload-target.ts win-x64 --latest",
-    "purge:latest": "tsx scripts/upload-target.ts --latest --purge-only"
+    "purge:latest": "tsx scripts/upload-target.ts --latest --purge-only",
+    "stage:r2:mac:arm64": "tsx scripts/stage-r2-feed.ts mac-arm64 --unsigned",
+    "stage:r2:win:x64": "tsx scripts/stage-r2-feed.ts win-x64 --unsigned"
   },
   "dependencies": {
     "electron-updater": "^6.8.9",

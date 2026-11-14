@@ -57,6 +57,9 @@ jobs:
           @(
             'DSH_DESKTOP_APP_ID=com.deepseek.harness'
             'DSH_DESKTOP_AUTO_UPDATE_ENV=production'
+            'DOWNLOAD_PROD_ORIGIN=https://r2.zhoumaosen.top'
+            'DSH_DESKTOP_UPDATE_PREFIX=yizu/desktop'
+            'DSH_DESKTOP_UPDATE_UNSIGNED=1'
             'DSH_DESKTOP_MANDATORY_UPDATE_PROD_ORIGIN=https://kwzg.yizuw.cn'
             'DSH_DESKTOP_WINDOWS_COMPRESSION_LEVEL=3'
           ) | Set-Content -Path "apps/desktop/.env.windows" -Encoding utf8
@@ -69,6 +72,24 @@ jobs:
       - name: Build Windows x64 unsigned installer
         run: |
           pnpm run package:desktop:win:x64:unsigned
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Stage (and upload if configured) R2 auto-update feed
+        env:
+          R2_ENDPOINT_URL: ${{ secrets.R2_ENDPOINT_URL }}
+          R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_REGION: ${{ vars.R2_REGION || 'auto' }}
+        run: |
+          $uploadArgs = @()
+          if ($env:R2_ENDPOINT_URL -and $env:R2_BUCKET_NAME -and $env:R2_ACCESS_KEY_ID -and $env:R2_SECRET_ACCESS_KEY) {
+            Write-Host "R2 credentials found; uploading feed & binaries directly to Cloudflare R2..."
+            $uploadArgs += '--upload'
+          } else {
+            Write-Host "R2 credentials not configured in repository secrets; staging feed locally for workflow artifact only."
+          }
+          pnpm --dir apps/desktop exec tsx scripts/stage-r2-feed.ts win-x64 --unsigned @uploadArgs
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Summarize built Windows artifacts
@@ -86,6 +107,8 @@ jobs:
           path: |
             apps/desktop/.desktop-build/targets/win-x64/unsigned-artifacts/*.exe
             apps/desktop/.desktop-build/targets/win-x64/unsigned-artifacts/*.blockmap
+            apps/desktop/.desktop-build/targets/win-x64/unsigned-artifacts/*.yml
+            apps/desktop/.desktop-build/targets/win-x64/r2-stage/
           if-no-files-found: error
           retention-days: 14
 

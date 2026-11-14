@@ -138,3 +138,28 @@ it.each([['darwin', 'arm64', 'mac-arm64', 'stable-mac.yml'], ['darwin', 'x64', '
   expect(desktopUpdateMetadataFilename('1.0.0', platform, config.channel)).toBe(filename)
   expect(() => resolveDesktopAutoUpdateConfig({ DSH_DESKTOP_UPDATE_CHANNEL: 'latest' }, platform, arch)).toThrow(/channel/u)
 })
+
+it('supports custom production origin and update path prefix for self-hosted mirrors', () => {
+  const config = resolveDesktopAutoUpdateConfig({
+    DSH_DESKTOP_AUTO_UPDATE_ENV: 'production',
+    DOWNLOAD_PROD_ORIGIN: 'https://r2.zhoumaosen.top/',
+    DSH_DESKTOP_UPDATE_PREFIX: '/yizu/desktop/',
+  }, 'win32', 'x64')
+  expect(config).toEqual({
+    environment: 'production',
+    channel: 'nightly',
+    target: 'win-x64',
+    origin: 'https://r2.zhoumaosen.top',
+    keyPrefix: 'yizu/desktop/feeds/win-x64',
+    binaryKeyPrefix: 'yizu/desktop/bin/win-x64',
+    publicUrl: 'https://r2.zhoumaosen.top/yizu/desktop/feeds/win-x64/',
+  })
+  expect(() => resolveDesktopAutoUpdateConfig({
+    DSH_DESKTOP_AUTO_UPDATE_ENV: 'production',
+    DOWNLOAD_PROD_ORIGIN: 'http://r2.zhoumaosen.top',
+  }, 'win32', 'x64')).toThrow(/DOWNLOAD_PROD_ORIGIN.*HTTPS origin/u)
+  expect(() => resolveDesktopAutoUpdateConfig({
+    DSH_DESKTOP_AUTO_UPDATE_ENV: 'production',
+    DSH_DESKTOP_UPDATE_PREFIX: '../escape',
+  }, 'win32', 'x64')).toThrow(/DSH_DESKTOP_UPDATE_PREFIX/u)
+})

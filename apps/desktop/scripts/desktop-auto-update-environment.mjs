@@ -25,7 +25,7 @@ const UPDATE_ENVIRONMENTS = {
     secretKeyEnvName: 'DOWNLOAD_TEST_COS_SECRET_KEY',
   },
   production: {
-    originEnvName: undefined,
+    originEnvName: 'DOWNLOAD_PROD_ORIGIN',
     fixedOrigin: 'https://download.deepseek.com',
     bucketEnvName: 'DOWNLOAD_PROD_COS_BUCKET',
     secretIdEnvName: 'DOWNLOAD_PROD_COS_SECRET_ID',
@@ -152,6 +152,20 @@ function httpsOrigin(value, name) {
   return parsed.origin
 }
 
+function resolveDesktopUpdatePrefix(env) {
+  const raw = env.DSH_DESKTOP_UPDATE_PREFIX?.trim()
+  if (raw === undefined || raw === '') return 'dsh-desk'
+  const stripped = raw.replace(/^\/+|\/+$/gu, '')
+  if (stripped === '' || /[\s?#\\]/u.test(stripped)) {
+    throw new Error('desktop auto-update: DSH_DESKTOP_UPDATE_PREFIX must be a clean relative path prefix')
+  }
+  const segments = stripped.split('/')
+  if (segments.some(segment => segment === '' || segment === '.' || segment === '..')) {
+    throw new Error('desktop auto-update: DSH_DESKTOP_UPDATE_PREFIX must not contain empty or dot path segments')
+  }
+  return segments.join('/')
+}
+
 /**
  * Resolve the public updater URL and object prefixes for one release target.
  * @param {NodeJS.ProcessEnv} env - Packaging or upload environment.
@@ -165,13 +179,18 @@ export function resolveDesktopAutoUpdateConfig(env, platform, arch) {
   const environment = resolveDesktopAutoUpdateEnvironment(env)
   const target = resolveDesktopAutoUpdateTarget(platform, arch)
   const deployment = UPDATE_ENVIRONMENTS[environment]
-  let origin = deployment.fixedOrigin
-  if (origin === undefined) {
+  const configuredOrigin = deployment.originEnvName === undefined ? undefined : env[deployment.originEnvName]?.trim()
+  let origin
+  if (configuredOrigin !== undefined && configuredOrigin !== '') {
+    origin = httpsOrigin(configuredOrigin, deployment.originEnvName)
+  } else if (deployment.fixedOrigin !== undefined) {
+    origin = deployment.fixedOrigin
+  } else {
     const { originEnvName } = deployment
     if (originEnvName === undefined) throw new Error('desktop auto-update: selected deployment has no origin')
     origin = httpsOrigin(requiredEnvironmentValue(env, originEnvName), originEnvName)
   }
-  let releasePrefix = 'dsh-desk'
+  let releasePrefix = resolveDesktopUpdatePrefix(env)
   if (environment === 'test') {
     const releaseId = requiredEnvironmentValue(env, 'DOWNLOAD_TEST_RELEASE_ID')
     if (!/^[a-f0-9]{32}$/u.test(releaseId)) {
