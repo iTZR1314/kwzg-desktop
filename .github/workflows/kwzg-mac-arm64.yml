@@ -1,0 +1,119 @@
+name: Build macOS Arm64 (Unsigned)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - kwzg-desktop
+    paths:
+      - '.github/workflows/kwzg-mac-arm64.yml'
+
+permissions:
+  contents: read
+
+env:
+  DSH_TELEMETRY_DISABLED: '1'
+
+jobs:
+  build-mac-arm64:
+    runs-on: macos-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+
+      - name: Verify Apple Silicon runner architecture
+        run: |
+          uname -m
+          if [ "$(uname -m)" != "arm64" ]; then
+            echo "Expected arm64 runner, got $(uname -m)" >&2
+            exit 1
+          fi
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Prepare unsigned macOS packaging config
+        run: |
+          printf '%s\n' \
+            'DSH_DESKTOP_APP_ID=com.deepseek.harness' \
+            'DSH_DESKTOP_AUTO_UPDATE_ENV=production' \
+            'DOWNLOAD_PROD_ORIGIN=https://r2.zhoumaosen.top' \
+            'DSH_DESKTOP_UPDATE_PREFIX=yizu/desktop' \
+            'DSH_DESKTOP_UPDATE_UNSIGNED=1' \
+            'DSH_DESKTOP_MANDATORY_UPDATE_PROD_ORIGIN=https://kwzg.yizuw.cn' \
+            'DSH_DESKTOP_MACOS_ZIP_COMPRESSION_LEVEL=3' \
+            > apps/desktop/.env.macos
+
+      - name: Check macOS packaging toolchain
+        env:
+          DSH_DESKTOP_UPDATE_UNSIGNED: '1'
+        run: pnpm run package:desktop:mac:arm64:unsigned -- --check
+
+      - name: Build macOS Arm64 unsigned installers
+        env:
+          DSH_DESKTOP_UPDATE_UNSIGNED: '1'
+        run: pnpm run package:desktop:mac:arm64:unsigned
+
+      - name: Stage (and upload if configured) R2 auto-update feed
+        env:
+          R2_ENDPOINT_URL: ${{ secrets.R2_ENDPOINT_URL }}
+          R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_REGION: ${{ vars.R2_REGION || 'auto' }}
+        run: |
+          upload_args=()
+          if [ -n "${R2_ENDPOINT_URL:-}" ] && [ -n "${R2_BUCKET_NAME:-}" ] && [ -n "${R2_ACCESS_KEY_ID:-}" ] && [ -n "${R2_SECRET_ACCESS_KEY:-}" ]; then
+            echo "R2 credentials found; uploading feed & binaries directly to Cloudflare R2..."
+            upload_args+=(--upload)
+          else
+            echo "R2 credentials not configured in repository secrets; staging feed locally for workflow artifact only."
+          fi
+          pnpm --dir apps/desktop exec tsx scripts/stage-r2-feed.ts mac-arm64 --unsigned "${upload_args[@]}"
+
+      - name: Summarize built macOS artifacts
+        run: |
+          out_dir="$GITHUB_WORKSPACE/apps/desktop/.desktop-build/targets/mac-arm64/unsigned-artifacts"
+          for file in "$out_dir"/*.dmg "$out_dir"/*.zip "$out_dir"/*.blockmap "$out_dir"/*.yml; do
+            [ -f "$file" ] || continue
+            size=$(stat -f '%z' "$file")
+            hash=$(shasum -a 256 "$file" | awk '{print $1}')
+            printf '%s  size=%s bytes  sha256=%s\n' "$(basename "$file")" "$size" "$hash"
+          done
+
+      - name: Upload macOS Arm64 installer artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: kwzg-desktop-mac-arm64-unsigned
+          path: |
+            apps/desktop/.desktop-build/targets/mac-arm64/unsigned-artifacts/*.dmg
+            apps/desktop/.desktop-build/targets/mac-arm64/unsigned-artifacts/*.zip
+            apps/desktop/.desktop-build/targets/mac-arm64/unsigned-artifacts/*.blockmap
+            apps/desktop/.desktop-build/targets/mac-arm64/unsigned-artifacts/*.yml
+            apps/desktop/.desktop-build/targets/mac-arm64/r2-stage/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload packaging diagnostics
+        continue-on-error: true
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kwzg-mac-arm64-packaging-logs
+          include-hidden-files: true
+          path: apps/desktop/.desktop-build/packaging-runs/
+          if-no-files-found: warn
+          retention-days: 14
