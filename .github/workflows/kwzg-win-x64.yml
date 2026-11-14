@@ -2,6 +2,12 @@ name: Build Windows x64 (Unsigned)
 
 on:
   workflow_dispatch:
+    inputs:
+      build_version:
+        description: '可选覆盖构建版本号（如 0.2.2-rc.2.20261114.1）；留空使用 package.json 版本'
+        type: string
+        default: ''
+        required: false
   push:
     branches:
       - kwzg-desktop
@@ -65,13 +71,25 @@ jobs:
           ) | Set-Content -Path "apps/desktop/.env.windows" -Encoding utf8
 
       - name: Check Windows packaging toolchain
+        env:
+          INPUT_BUILD_VERSION: ${{ inputs.build_version }}
         run: |
-          pnpm run package:desktop:win:x64:unsigned -- --check
+          $versionArgs = @()
+          if ($env:INPUT_BUILD_VERSION -and $env:INPUT_BUILD_VERSION.Trim() -ne '') {
+            $versionArgs += @('--build-version', $env:INPUT_BUILD_VERSION.Trim())
+          }
+          pnpm run package:desktop:win:x64:unsigned -- --check @versionArgs
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Build Windows x64 unsigned installer
+        env:
+          INPUT_BUILD_VERSION: ${{ inputs.build_version }}
         run: |
-          pnpm run package:desktop:win:x64:unsigned
+          $versionArgs = @()
+          if ($env:INPUT_BUILD_VERSION -and $env:INPUT_BUILD_VERSION.Trim() -ne '') {
+            $versionArgs += @('--build-version', $env:INPUT_BUILD_VERSION.Trim())
+          }
+          pnpm run package:desktop:win:x64:unsigned -- @versionArgs
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Stage (and upload if configured) R2 auto-update feed

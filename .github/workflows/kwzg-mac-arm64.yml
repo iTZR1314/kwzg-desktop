@@ -2,6 +2,12 @@ name: Build macOS Arm64 (Unsigned)
 
 on:
   workflow_dispatch:
+    inputs:
+      build_version:
+        description: '可选覆盖构建版本号（如 0.2.2-rc.2.20261114.1）；留空使用 package.json 版本'
+        type: string
+        default: ''
+        required: false
   push:
     branches:
       - kwzg-desktop
@@ -60,12 +66,24 @@ jobs:
       - name: Check macOS packaging toolchain
         env:
           DSH_DESKTOP_UPDATE_UNSIGNED: '1'
-        run: pnpm run package:desktop:mac:arm64:unsigned -- --check
+          INPUT_BUILD_VERSION: ${{ inputs.build_version }}
+        run: |
+          version_args=()
+          if [ -n "${INPUT_BUILD_VERSION:-}" ]; then
+            version_args+=(--build-version "$INPUT_BUILD_VERSION")
+          fi
+          pnpm run package:desktop:mac:arm64:unsigned -- --check "${version_args[@]}"
 
       - name: Build macOS Arm64 unsigned installers
         env:
           DSH_DESKTOP_UPDATE_UNSIGNED: '1'
-        run: pnpm run package:desktop:mac:arm64:unsigned
+          INPUT_BUILD_VERSION: ${{ inputs.build_version }}
+        run: |
+          version_args=()
+          if [ -n "${INPUT_BUILD_VERSION:-}" ]; then
+            version_args+=(--build-version "$INPUT_BUILD_VERSION")
+          fi
+          pnpm run package:desktop:mac:arm64:unsigned -- "${version_args[@]}"
 
       - name: Stage (and upload if configured) R2 auto-update feed
         env:
